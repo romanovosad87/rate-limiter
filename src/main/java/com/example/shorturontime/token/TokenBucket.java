@@ -1,6 +1,8 @@
 package com.example.shorturontime.token;
 
-public class TokenBucket {
+import java.io.Serializable;
+
+public class TokenBucket implements Serializable {
     private static final int CAPACITY = 3;
     private static final long REFILL_TIME = 60_000;   // 1 minute
     private int tokens;
