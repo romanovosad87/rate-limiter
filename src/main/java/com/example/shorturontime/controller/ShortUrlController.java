@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequestMapping("/short")
 public class ShortUrlController {
 
-    private Map<String, String> urlMap = new ConcurrentHashMap<>();
+    private final Map<String, String> urlMap = new ConcurrentHashMap<>();
 
 
     @PostMapping
