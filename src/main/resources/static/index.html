@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        #short-url {
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<h2>URL Shortener</h2>
+<label for="original-url">Enter your URL:</label><br>
+<input type="text" id="original-url" placeholder="Enter your URL here"><br>
+<button onclick="shortenUrl()">Shorten URL</button>
+<div id="short-url"></div>
+
+<script>
+    function shortenUrl() {
+        const originalUrl = document.getElementById("original-url").value;
+        fetch("/short", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ url: originalUrl })
+        })
+            .then(response => {
+                if (response.status === 429) {
+                    throw new Error("The rate limit for 3 requests per minute has been exceeded");
+                } else if (!response.ok) {
+                    throw new Error("Error occurred while shortening URL");
+                }
+                return response.text();
+            })
+            .then(shortUrl => {
+                document.getElementById("short-url").innerHTML = `<p>Short URL: <a href="${shortUrl}" target="_blank">${shortUrl}</a></p>`;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("short-url").innerHTML = `<p class="error">${error.message}</p>`;
+            });
+    }
+</script>
+</body>
+</html>
